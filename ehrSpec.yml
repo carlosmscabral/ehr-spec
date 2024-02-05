@@ -1,0 +1,1308 @@
+openapi: 3.0.0
+info:
+  title: Electronic Health Record (EHR) System API
+  description: >-
+    This API provides access to an Electronic Health Record (EHR) system. It
+    includes endpoints for managing patients, doctors, drugs, appointments, and
+    other healthcare-related data.
+  version: 1.0.0
+  contact: {}
+paths:
+  /appointments:
+    get:
+      description: Retrieve a list of all appointments.
+      operationId: getAppointments
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/Appointment"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of appointments.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unexpected error
+      tags:
+        - appointments
+    post:
+      description: Creates a new appointment in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Appointment"
+        description: The appointment to create.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+          description: The appointment was created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The request was invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: An internal server error occurred.
+      summary: Create a new appointment.
+      tags:
+        - appointments
+  /appointments/{appointmentId}:
+    delete:
+      operationId: deleteAppointment
+      responses:
+        "200":
+          description: The appointment was deleted successfully.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The appointment with the specified ID does not exist.
+      summary: Delete an appointment by its unique ID.
+      tags:
+        - appointments
+    get:
+      description: Retrieves a single appointment by its unique ID.
+      operationId: getAppointmentById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+          description: The appointment was retrieved successfully.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The appointment was not found.
+      summary: Retrieve a single appointment by its unique ID.
+      tags:
+        - appointments
+    parameters:
+      - description: The unique ID of the appointment.
+        in: path
+        name: appointmentId
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateAppointment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Appointment"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+          description: The updated appointment.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Appointment not found.
+      summary: Update an existing appointment.
+      tags:
+        - appointments
+  /diagnoses:
+    get:
+      description: Retrieve a list of all diagnoses.
+      operationId: getDiagnoses
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/Diagnosis"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of diagnoses.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unexpected error
+      tags:
+        - diagnoses
+    post:
+      description: Create a new diagnosis.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Diagnosis"
+        description: Diagnosis to be created
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diagnosis"
+          description: Diagnosis created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error.
+      tags:
+        - diagnoses
+  /diagnoses/{diagnosisId}:
+    delete:
+      operationId: deleteDiagnosesDiagnosisId
+      responses:
+        "204":
+          description: No Content
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
+      summary: Delete a diagnosis by its unique ID.
+      tags:
+        - diagnoses
+    get:
+      description: Retrieve a single diagnosis by its unique ID.
+      operationId: getDiagnosisById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diagnosis"
+          description: Successful operation.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Diagnosis not found.
+      tags:
+        - diagnoses
+    parameters:
+      - description: The unique ID of the diagnosis.
+        in: path
+        name: diagnosisId
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateDiagnosis
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Diagnosis"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diagnosis"
+          description: The updated diagnosis.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Diagnosis not found.
+      summary: Update an existing diagnosis.
+      tags:
+        - diagnoses
+  /doctors:
+    get:
+      description: Retrieve a list of all doctors.
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/Doctor"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of doctors.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unexpected error
+      tags:
+        - doctors
+    post:
+      description: Creates a new doctor in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Doctor"
+        description: Doctor to be created
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Doctor"
+          description: Doctor created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Create a new doctor
+      tags:
+        - doctors
+  /doctors/{doctorId}:
+    delete:
+      description: Delete a doctor by their unique ID.
+      operationId: deleteDoctor
+      responses:
+        "200":
+          description: The doctor was deleted successfully.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The doctor with the specified ID does not exist.
+      tags:
+        - doctors
+    get:
+      description: Retrieve a single doctor by their unique ID.
+      operationId: getDoctorById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Doctor"
+          description: Successful operation.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Doctor not found.
+      tags:
+        - doctors
+    parameters:
+      - description: The unique ID of the doctor to be updated.
+        in: path
+        name: doctorId
+        required: true
+        schema:
+          type: string
+    put:
+      description: Updates an existing doctor in the system.
+      operationId: updateDoctor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Doctor"
+        description: The updated doctor information.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Doctor"
+          description: The updated doctor.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Doctor not found.
+      summary: Update an existing doctor.
+      tags:
+        - doctors
+  /drugs:
+    get:
+      description: Retrieve a list of all drugs.
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/Drug"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of drugs.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: An unexpected error occurred.
+      tags:
+        - drugs
+    post:
+      description: Creates a new drug in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Drug"
+        description: Drug object that needs to be added to the database
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Drug"
+          description: Drug created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid input
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Create a new drug
+      tags:
+        - drugs
+  /drugs/{drugId}:
+    delete:
+      operationId: deleteDrug
+      responses:
+        "200":
+          description: The drug was deleted successfully.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The drug with the specified ID does not exist.
+      summary: Delete a drug by its unique ID.
+      tags:
+        - drugs
+    get:
+      description: Retrieve a single drug by its unique ID.
+      operationId: getDrugById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Drug"
+          description: Successful operation.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Drug not found.
+      tags:
+        - drugs
+    parameters:
+      - description: The unique ID of the drug.
+        in: path
+        name: drugId
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateDrug
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Drug"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Drug"
+          description: Successful response.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Drug not found.
+      summary: Update an existing drug.
+      tags:
+        - drugs
+  /patients:
+    get:
+      description: Retrieve a list of all patients.
+      operationId: getPatients
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/Patient"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of patients.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unexpected error
+      tags:
+        - patients
+    post:
+      description: Creates a new patient in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Patient"
+        description: Patient to be created
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+          description: Patient created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error.
+      summary: Create a new patient.
+      tags:
+        - patients
+  /patients/{patientId}:
+    delete:
+      description: Delete a patient by their unique ID.
+      operationId: deletePatientsPatientId
+      responses:
+        "204":
+          description: No Content
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
+      tags:
+        - patients
+    get:
+      description: Retrieve a single patient by their unique ID.
+      operationId: getPatientById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+          description: Successful operation.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Patient not found.
+      tags:
+        - patients
+    parameters:
+      - description: The unique ID of the patient.
+        in: path
+        name: patientId
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updatePatient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Patient"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+          description: The updated patient.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Patient not found.
+      summary: Update an existing patient.
+      tags:
+        - patients
+  /prescriptions:
+    get:
+      description: Retrieve a list of all prescriptions.
+      operationId: getPrescriptions
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/Prescription"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of prescriptions.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unexpected error
+      tags:
+        - prescriptions
+    post:
+      description: Create a new prescription.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Prescription"
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+          description: Prescription created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error.
+      tags:
+        - prescriptions
+  /prescriptions/{prescriptionId}:
+    delete:
+      operationId: deletePrescription
+      responses:
+        "204":
+          description: No Content
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
+      summary: Delete a prescription by its unique ID.
+      tags:
+        - prescriptions
+    get:
+      description: Retrieve a single prescription by its unique ID.
+      operationId: getPrescriptionById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+          description: Successful operation.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Prescription not found.
+      tags:
+        - prescriptions
+    parameters:
+      - description: The unique ID of the prescription.
+        in: path
+        name: prescriptionId
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updatePrescription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Prescription"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+          description: The prescription was updated successfully.
+        "400":
+          $ref: "#/components/schemas/Error"
+        "404":
+          $ref: "#/components/schemas/Error"
+      summary: Update an existing prescription.
+      tags:
+        - prescriptions
+  /procedures:
+    get:
+      description: Retrieve a list of all procedures.
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/Procedure"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of procedures.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unexpected error
+      tags:
+        - procedures
+    post:
+      description: Creates a new procedure in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Procedure"
+        description: Procedure to create
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Procedure"
+          description: Procedure created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      summary: Create a new procedure
+      tags:
+        - procedures
+  /procedures/{procedureId}:
+    delete:
+      operationId: deleteProcedure
+      responses:
+        "200":
+          description: The procedure was deleted successfully.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The procedure with the specified ID does not exist.
+      summary: Delete a procedure by its unique ID.
+      tags:
+        - procedures
+    get:
+      description: Retrieve a single procedure by its unique ID.
+      operationId: getProcedureById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Procedure"
+          description: Successful operation.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Procedure not found.
+      tags:
+        - procedures
+    parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateProcedure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Procedure"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Procedure"
+          description: Procedure updated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad request.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Procedure not found.
+      summary: Update an existing procedure.
+      tags:
+        - procedures
+  /testResults:
+    get:
+      description: Retrieve a list of all test results.
+      operationId: getTestResults
+      parameters:
+        - description: The number of items to return per API request.
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+        - description: >-
+            A page token received from a previous API request, used to request a
+            subsequent page.
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: "#/components/schemas/TestResult"
+                    type: array
+                  nextPageToken:
+                    type: string
+                type: object
+          description: A list of test results.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unexpected error
+      tags:
+        - test-results
+    post:
+      description: Creates a new test result.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestResult"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestResult"
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Conflict
+      summary: Create a new test result.
+      tags:
+        - test-results
+  /testResults/{testResultId}:
+    delete:
+      operationId: deleteTestResult
+      responses:
+        "204":
+          description: No Content
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
+      summary: Delete a test result by its unique ID.
+      tags:
+        - test-results
+    get:
+      description: Returns a single test result by its unique ID.
+      operationId: getTestresultById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestResult"
+          description: Successful operation.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Test result not found.
+      summary: Retrieve a single test result by its unique ID.
+      tags:
+        - test-results
+    parameters:
+      - description: The unique ID of the test result.
+        in: path
+        name: testResultId
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateTestResult
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestResult"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestResult"
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
+      summary: Update an existing test result.
+      tags:
+        - test-results
+components:
+  schemas:
+    Appointment:
+      description: An appointment.
+      properties:
+        appointmentId:
+          description: The unique ID of the appointment.
+          type: string
+        date:
+          description: The date of the appointment.
+          type: string
+        doctorId:
+          description: The ID of the doctor associated with the appointment.
+          type: string
+        location:
+          description: The location of the appointment.
+          type: string
+        patientId:
+          description: The ID of the patient associated with the appointment.
+          type: string
+        time:
+          description: The time of the appointment.
+          type: string
+      type: object
+    Diagnosis:
+      description: A diagnosis made by a doctor.
+      properties:
+        date:
+          description: The date of the diagnosis.
+          type: string
+        description:
+          description: A description of the diagnosis.
+          type: string
+        diagnosisId:
+          description: The unique ID of the diagnosis.
+          type: string
+        doctorId:
+          description: The ID of the doctor who made the diagnosis.
+          type: string
+        patientId:
+          description: The ID of the patient associated with the diagnosis.
+          type: string
+      type: object
+    Doctor:
+      description: A doctor in the EHR system.
+      properties:
+        address:
+          description: The address of the doctor.
+          type: string
+        doctorId:
+          description: The unique ID of the doctor.
+          type: string
+        email:
+          description: The email address of the doctor.
+          type: string
+        firstName:
+          description: The first name of the doctor.
+          type: string
+        lastName:
+          description: The last name of the doctor.
+          type: string
+        phoneNumber:
+          description: The phone number of the doctor.
+          type: string
+        specialty:
+          description: The specialty of the doctor.
+          type: string
+      type: object
+    Drug:
+      description: A drug in the EHR system.
+      properties:
+        description:
+          description: A description of the drug.
+          type: string
+        dosage:
+          description: The dosage of the drug.
+          type: string
+        drugId:
+          description: The unique ID of the drug.
+          type: string
+        name:
+          description: The name of the drug.
+          type: string
+        sideEffects:
+          description: The side effects of the drug.
+          items:
+            type: string
+          type: array
+      type: object
+    Error:
+      description: An error object.
+      properties:
+        code:
+          description: The error code.
+          type: string
+        message:
+          description: A human-readable error message.
+          type: string
+      type: object
+    Patient:
+      description: A patient in the EHR system.
+      properties:
+        address:
+          description: The address of the patient.
+          type: string
+        dateOfBirth:
+          description: The date of birth of the patient.
+          type: string
+        email:
+          description: The email address of the patient.
+          type: string
+        firstName:
+          description: The first name of the patient.
+          type: string
+        gender:
+          description: The gender of the patient.
+          type: string
+        lastName:
+          description: The last name of the patient.
+          type: string
+        patientId:
+          description: The unique ID of the patient.
+          type: string
+        phoneNumber:
+          description: The phone number of the patient.
+          type: string
+      required:
+        - firstName
+        - lastName
+        - patientId
+      type: object
+    Prescription:
+      description: A prescription for a medication.
+      properties:
+        doctorId:
+          description: The ID of the doctor who prescribed the medication.
+          type: string
+        dosage:
+          description: The dosage of the drug prescribed.
+          type: string
+        drugId:
+          description: The ID of the drug prescribed.
+          type: string
+        patientId:
+          description: The ID of the patient associated with the prescription.
+          type: string
+        prescriptionId:
+          description: The unique ID of the prescription.
+          type: string
+        refills:
+          description: The number of refills allowed for the prescription.
+          type: integer
+      type: object
+    Procedure:
+      description: A procedure performed on a patient.
+      properties:
+        date:
+          description: The date of the procedure.
+          type: string
+        description:
+          description: A description of the procedure.
+          type: string
+        doctorId:
+          description: The ID of the doctor who performed the procedure.
+          type: string
+        patientId:
+          description: The ID of the patient associated with the procedure.
+          type: string
+        procedureId:
+          description: The unique ID of the procedure.
+          type: string
+      type: object
+    TestResult:
+      description: A test result.
+      properties:
+        date:
+          description: The date of the test.
+          type: string
+        doctorId:
+          description: The ID of the doctor who ordered the test.
+          type: string
+        patientId:
+          description: The ID of the patient associated with the test result.
+          type: string
+        result:
+          description: The result of the test.
+          type: string
+        testResultId:
+          description: The unique ID of the test result.
+          type: string
+        type:
+          description: The type of test performed.
+          type: string
+      type: object
